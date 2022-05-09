@@ -1,13 +1,14 @@
 %global _empty_manifest_terminate_build 0
 Name:		python-lockfile
 Version:	0.12.2
-Release:	1
+Release:	2
 Summary:	Platform-independent file locking module
 License:	MIT License
 URL:		http://launchpad.net/pylockfile
 Source0:	https://files.pythonhosted.org/packages/17/47/72cb04a58a35ec495f96984dddb48232b551aafb95bde614605b754fe6f7/lockfile-0.12.2.tar.gz
+Patch0000:      convert-to-unittest.patch
 BuildArch:	noarch
-BuildRequires:  python3-pbr python3-nose
+BuildRequires:  python3-pbr python3-pytest
 
 %description
 The lockfile module exports a FileLock class which provides a simple API for
@@ -38,6 +39,7 @@ Development documents and examples for lockfile
 
 %prep
 %autosetup -n lockfile-%{version} -p1
+cp -r lockfile test/
 
 %build
 %py3_build
@@ -71,7 +73,7 @@ mv %{buildroot}/filelist.lst .
 mv %{buildroot}/doclist.lst .
 
 %check
-PYTHONPATH=./ nosetests-3
+/usr/bin/pytest
 
 %files -n python3-lockfile -f filelist.lst
 %dir %{python3_sitelib}/*
@@ -80,5 +82,8 @@ PYTHONPATH=./ nosetests-3
 %{_pkgdocdir}
 
 %changelog
+* Sat May 7 2022 caodongxia <caodongxia@h-partners.com> - 0.12.2-2
+- Remove test dependency on python-nose during build
+
 * Wed Aug 25 2021 Python_Bot <Python_Bot@openeuler.org>
 - Package Spec generated
